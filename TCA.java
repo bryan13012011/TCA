@@ -19,9 +19,18 @@ public class TCA {
 
     public static void main(String[] args) {
         char[][] matriz = new char[25][80];
-        System.out.printf("**************************\n"+
-        "*     JOGO DA COBRINHA   *\n"+
-        "**************************\n"+
+       
+            System.out.print("""
+                   
+       ███  ███   ███   ███    ████   ███      ███   ███  ████  ████  ███ █   █ █   █  ███    
+       █░░█ ░░█ █ ░░░ █ ░░█    █░░░█ █ ░░█    █ ░░░ █ ░░█ █░░░█ █░░░█  █░░██  █░█░  █░█ ░░█   
+       █░░█░ ░█░█░ ██░█░ ░█░   █░░░█░█████░   █░ ░░░█░ ░█░████░░████░░ █░░█░█ █░█████░█████░  
+    █  █░░█░░ █░█░░ █░█░░ █░░  █░░ █░█░░░█░░  █░░   █░░ █░█░░░█ █░░█░ ░█░░█░░██░█░░░█░█░░░█░░ 
+     ██ ░░ ███ ░░███ ░░███ ░░  ████ ░█░░░█░░   ███   ███ ░████░░█░░░█░███░█░░ █░█░░░█░█░░░█░░ 
+      ░░ ░  ░░░ ░ ░░░ ░ ░░░ ░   ░░░░ ░░░  ░░    ░░░   ░░░ ░░░░░ ░░░  ░ ░░░ ░░  ░░░░  ░░░░  ░░ 
+       ░░    ░░░   ░░░   ░░░     ░░░░  ░   ░     ░░░   ░░░  ░░░░  ░   ░ ░░░ ░   ░ ░   ░ ░   ░ 
+       """);
+        System.out.printf(
         "Use W, A, S, D para jogar.");
         
         for(int linha = 0;linha < matriz.length;linha++){
@@ -44,24 +53,30 @@ public class TCA {
 
         for(int i = 0; i < fruta.length;i++){
             fruta[i] = new Frutas();
-            fruta[i].y = FRUTINHAS.nextInt(matriz.length);
-            fruta[i].x = FRUTINHAS.nextInt(matriz[0].length);
-            fruta[i].tipoFruta = '♥';
+            fruta[i].y = FRUTINHAS.nextInt(matriz.length-1);
+            fruta[i].x = FRUTINHAS.nextInt(matriz[0].length-1);
+            fruta[i].tipoFruta = '๏';
 
             matriz[fruta[i].y] [fruta[i].x] = fruta[i].tipoFruta;
             
         }
         for(int i = 0; i < matriz.length;i++){
             for(int j = 0; j < matriz[0].length;j++){
+                
                 System.out.print(matriz[i][j]);
-        
+                
             }
             System.out.println();
+            
         }
+
 
         while(jogando){
             
-    
+            
+            char jogada;
+
+
         }
     }
     // Liga o Java às funções _kbhit e _getch do Windows (só usada no Windows)
@@ -142,6 +157,4 @@ public class TCA {
 }  
 
 
-        
-    
 
