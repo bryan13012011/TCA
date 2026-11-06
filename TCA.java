@@ -5,8 +5,6 @@ import com.sun.jna.Native;
 public class TCA {
     final static Scanner LER = new Scanner(System.in);
 
-    static Frutas[] fruta = new Frutas[4];
-
     final static Random FRUTINHAS = new Random();
 
     public static int lerValorInteiro(){
@@ -19,6 +17,7 @@ public class TCA {
 
     public static void main(String[] args) {
         char[][] matriz = new char[25][80];
+        
        
             System.out.print("""
                    
@@ -43,7 +42,6 @@ public class TCA {
                     matriz[linha][coluna] = ' ';
                 }
 
-             
             }
             
         }
@@ -51,15 +49,12 @@ public class TCA {
         
         boolean jogando = true;
 
-        for(int i = 0; i < fruta.length;i++){
-            fruta[i] = new Frutas();
-            fruta[i].y = FRUTINHAS.nextInt(matriz.length-1);
-            fruta[i].x = FRUTINHAS.nextInt(matriz[0].length-1);
-            fruta[i].tipoFruta = '๏';
+        
+       
+        
+        
 
-            matriz[fruta[i].y] [fruta[i].x] = fruta[i].tipoFruta;
-            
-        }
+
         for(int i = 0; i < matriz.length;i++){
             for(int j = 0; j < matriz[0].length;j++){
                 
@@ -70,15 +65,10 @@ public class TCA {
             
         }
 
-
-        while(jogando){
-            
-            
-            char jogada;
-
-
-        }
     }
+
+
+
     // Liga o Java às funções _kbhit e _getch do Windows (só usada no Windows)
     public interface Crt extends Library {
         Crt INSTANCE = Native.load("msvcrt", Crt.class);
