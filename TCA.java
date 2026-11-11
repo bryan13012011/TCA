@@ -125,8 +125,8 @@ public class TCA {
         }
        
        
-        int posX = cobraLinha[CABECA];
-        int posY = cobraColuna[CORPO];
+        int posX = cobraLinha[0];
+        int posY = cobraColuna[0];
 
 
         while (true) {
