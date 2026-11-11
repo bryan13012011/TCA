@@ -1,11 +1,19 @@
-import java.util.*;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import java.util.*;
+
 
 public class TCA {
     final static Scanner LER = new Scanner(System.in);
 
+
     final static Random FRUTINHAS = new Random();
+
+
+    final static char VAZIO = '.';
+    final static char CABECA = 'O'; 
+    final static char CORPO = 'o';  
+
 
     public static int lerValorInteiro(){
         return  LER.nextInt();
@@ -13,15 +21,55 @@ public class TCA {
     
     public static float lerFloat(){
         return LER.nextFloat();
+
+    }
+    public static char lerValorCaracter(){
+		char letra = LER.next().charAt(0);
+		return letra;
+	}
+
+
+    public static void gerarFruta(char[][] matriz) {
+        int linha = FRUTINHAS.nextInt(matriz.length - 2) + 1;
+        int coluna = FRUTINHAS.nextInt(matriz[0].length - 2) + 1;
+
+
+        while (matriz[linha][coluna] != VAZIO) {
+            linha = FRUTINHAS.nextInt(matriz.length - 2) + 1;
+            coluna = FRUTINHAS.nextInt(matriz[0].length - 2) + 1;
+        }
+
+
+        matriz[linha][coluna] = '*';
     }
 
+
+    public static void gerarFrutas(char[][] matriz, int quantidade) {
+        for (int i = 0; i < quantidade; i++) {
+            gerarFruta(matriz);
+        }
+    }
+
+
+
+
+    public static void desenharCobra(char[][] matriz, int[] cobraLinha, int[] cobraColuna, int tamanho) {
+        for (int i = 0; i < tamanho; i++) {
+            if (i == 0) {
+                matriz[cobraLinha[i]][cobraColuna[i]] = CABECA;
+            } else {
+                matriz[cobraLinha[i]][cobraColuna[i]] = CORPO;
+            }
+        }
+    }
+
+
     public static void main(String[] args) {
-        char[][] matriz = new char[25][80];
+        char[][] matriz = new char[10][40];
         
-       
-            System.out.print("""
+        System.out.print("""
                    
-       ███  ███   ███   ███    ████   ███      ███   ███  ████  ████  ███ █   █ █   █  ███    
+       █   ███   ███   ███     ████   ███      ███   ███  ████  ████  ███ █   █ █   █  ███    
        █░░█ ░░█ █ ░░░ █ ░░█    █░░░█ █ ░░█    █ ░░░ █ ░░█ █░░░█ █░░░█  █░░██  █░█░  █░█ ░░█   
        █░░█░ ░█░█░ ██░█░ ░█░   █░░░█░█████░   █░ ░░░█░ ░█░████░░████░░ █░░█░█ █░█████░█████░  
     █  █░░█░░ █░█░░ █░█░░ █░░  █░░ █░█░░░█░░  █░░   █░░ █░█░░░█ █░░█░ ░█░░█░░██░█░░░█░█░░░█░░ 
@@ -29,47 +77,126 @@ public class TCA {
       ░░ ░  ░░░ ░ ░░░ ░ ░░░ ░   ░░░░ ░░░  ░░    ░░░   ░░░ ░░░░░ ░░░  ░ ░░░ ░░  ░░░░  ░░░░  ░░ 
        ░░    ░░░   ░░░   ░░░     ░░░░  ░   ░     ░░░   ░░░  ░░░░  ░   ░ ░░░ ░   ░ ░   ░ ░   ░ 
        """);
-        System.out.printf(
-        "Use W, A, S, D para jogar.");
+            System.out.println("  Mova a cobrinha com W, A, S, D. ESC para sair.");
+       
         
         for(int linha = 0;linha < matriz.length;linha++){
             for(int coluna = 0;coluna < matriz[0].length;coluna++){
                 
-                if(linha == matriz.length-1 || linha == 0||coluna == matriz[0].length-1 || coluna == 0){
+                if(linha == matriz.length-1 || linha == 0 || coluna == matriz[0].length-1 || coluna == 0){
                     matriz[linha][coluna] = '#';
-                    
                 }else{
-                    matriz[linha][coluna] = ' ';
+                    matriz[linha][coluna] = VAZIO;
                 }
 
+
             }
-            
         }
         System.out.printf("\n\n");
         
-        boolean jogando = true;
-
-        
-       
         
         
-
-
+        int tamanho = 3;
+        
+        int[] cobraLinha = new int[(matriz.length - 2) * (matriz[0].length - 2)];
+        int[] cobraColuna = new int[(matriz.length - 2) * (matriz[0].length - 2)];
+        
+        
+        int posicao = 0;
+        while (posicao < tamanho) {
+            cobraLinha[posicao] = matriz.length / 2;
+            cobraColuna[posicao] = matriz[0].length / 2 - posicao;
+            posicao++;
+        }
+        
+        
+        desenharCobra(matriz, cobraLinha, cobraColuna, tamanho);
+        
+        
+        gerarFrutas(matriz, 4);
+        
+        
         for(int i = 0; i < matriz.length;i++){
             for(int j = 0; j < matriz[0].length;j++){
-                
                 System.out.print(matriz[i][j]);
-                
             }
             System.out.println();
-            
         }
+       
+        int largura = 40;
+        int altura = 10;
+        int posX = 10;
+        int posY = 5;
 
-    }
+        boolean cima = false;
+        boolean baixo = false;
+        boolean direita  = false;
+        boolean esquerda = false;
+
+       
+
+
+        
+        esperarTecla();
+
+        while (true) {
+            // Lógica para detectar o movimento
+            if (pressionouTecla()) {
+                int tecla = obtemTeclaPressionada();
+                switch (tecla) {
+                    case 'a':
+                    case 'A':
+                        posX--;
+                        break;
+                    case 'd':
+                    case 'D':
+                        posX++;
+                        break;
+                    case 'w':
+                    case 'W':
+                        posY--;
+                        break;
+                    case 's':
+                    case 'S':
+                        posY++;
+                        break;
+                    case 27: // Código ASCII para a tecla ESC
+                        return; // Sai do loop e termina o programa
+                }
+            }
+            
+            
+            if (posX < 0){
+                break;
+            }
+
+            if (posX > largura - 1){
+                break;
+            }
+            if (posY < 0) {
+                break;
+            }
+
+            if (posY > altura - 1){
+                break;
+            }
+            
+
+          
+        
+        }
+    }  
+  
+
+        
+    
 
 
 
-    // Liga o Java às funções _kbhit e _getch do Windows (só usada no Windows)
+
+
+
+// Liga o Java às funções _kbhit e _getch do Windows (só usada no Windows)
     public interface Crt extends Library {
         Crt INSTANCE = Native.load("msvcrt", Crt.class);
         int _kbhit();
@@ -144,7 +271,7 @@ public class TCA {
         }
     }
 
-}  
+}
 
 
 
