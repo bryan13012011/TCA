@@ -1,5 +1,7 @@
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+
+import java.lang.classfile.instruction.SwitchCase;
 import java.util.*;
 
 
@@ -65,7 +67,7 @@ public class TCA {
 
 
     public static void main(String[] args) {
-        char[][] matriz = new char[10][40];
+        char[][] matriz = new char[25][50];
         
         System.out.print("""
                    
@@ -96,7 +98,7 @@ public class TCA {
         
         
         
-        int tamanho = 3;
+        int tamanho = 3; 
         
         int[] cobraLinha = new int[(matriz.length - 2) * (matriz[0].length - 2)];
         int[] cobraColuna = new int[(matriz.length - 2) * (matriz[0].length - 2)];
@@ -123,21 +125,10 @@ public class TCA {
             System.out.println();
         }
        
-        int largura = 40;
-        int altura = 10;
-        int posX = 10;
-        int posY = 5;
-
-        boolean cima = false;
-        boolean baixo = false;
-        boolean direita  = false;
-        boolean esquerda = false;
-
        
+        int posX = cobraLinha[CABECA];
+        int posY = cobraColuna[CORPO];
 
-
-        
-        esperarTecla();
 
         while (true) {
             // Lógica para detectar o movimento
@@ -161,41 +152,14 @@ public class TCA {
                         posY++;
                         break;
                     case 27: // Código ASCII para a tecla ESC
-                        return; // Sai do loop e termina o programa
+                        return;
+                    default:
+                        break; // Sai do loop e termina o programa
                 }
             }
-            
-            
-            if (posX < 0){
-                break;
-            }
 
-            if (posX > largura - 1){
-                break;
-            }
-            if (posY < 0) {
-                break;
-            }
-
-            if (posY > altura - 1){
-                break;
-            }
-            
-
-          
-        
         }
     }  
-  
-
-        
-    
-
-
-
-
-
-
 // Liga o Java às funções _kbhit e _getch do Windows (só usada no Windows)
     public interface Crt extends Library {
         Crt INSTANCE = Native.load("msvcrt", Crt.class);
