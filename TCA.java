@@ -8,9 +8,11 @@ public class TCA {
 
     final static Random FRUTINHAS = new Random();
 
-    final static char VAZIO = '.';
+    final static char VAZIO = ' ';
     final static char CABECA = 'O';
     final static char CORPO = 'o';
+    static int direcaoLinha = 0;
+    static int direcaoColuna = 1;
 
     public static int lerValorInteiro() {
         return LER.nextInt();
@@ -26,7 +28,7 @@ public class TCA {
         return letra;
     }
 
-    public static void gerarFruta(char[][] matriz) {
+    public static int[] gerarFruta(char[][] matriz) {
         int linha = FRUTINHAS.nextInt(matriz.length - 2) + 1;
         int coluna = FRUTINHAS.nextInt(matriz[0].length - 2) + 1;
 
@@ -36,6 +38,7 @@ public class TCA {
         }
 
         matriz[linha][coluna] = '*';
+        return new int[] { linha, coluna };
     }
 
     public static void gerarFrutas(char[][] matriz, int quantidade) {
@@ -44,8 +47,8 @@ public class TCA {
         }
     }
 
-    public static void desenharCobra(char[][] matriz, int[] cobraLinha, int[] cobraColuna, int tamanho ) {
-        for(int posicao = 0; posicao < tamanho;posicao++ ){
+    public static void desenharCobra(char[][] matriz, int[] cobraLinha, int[] cobraColuna, int tamanho) {
+        for (int posicao = 0; posicao < tamanho; posicao++) {
 
             if (posicao == 0) {
                 matriz[cobraLinha[posicao]][cobraColuna[posicao]] = CABECA;
@@ -56,8 +59,23 @@ public class TCA {
 
     }
 
+    public static void atualizarTela(int linha, int coluna, char caractere) {
+        System.out.print("\033[" + (linha + 12) + ";" + (coluna + 1) + "H");
+        System.out.print(caractere);
+        System.out.flush();
+    }
+
+    public static void mostrarPontuacao(int pontuacao) {
+        System.out.print("\033[10;1H");
+        System.out.print("  Pontuação: " + pontuacao);
+        System.out.flush();
+    }
+
     public static void main(String[] args) {
-        char[][] matriz = new char[25][50];
+        System.out.print("\033[2J\033[H");
+        System.out.print("\033[?25l"); // esconde o cursor
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.print("\033[?25h"))); // mostra o cursor ao sair
+        char[][] matriz = new char[20][40];
 
         System.out.print("""
 
@@ -84,7 +102,8 @@ public class TCA {
         }
         System.out.printf("\n\n");
 
-        int tamanho = 5;
+        int tamanho = 3;
+        int pontuacao = 0;
 
         int[] cobraLinha = new int[(matriz.length - 2) * (matriz[0].length - 2)];
         int[] cobraColuna = new int[(matriz.length - 2) * (matriz[0].length - 2)];
@@ -95,11 +114,10 @@ public class TCA {
             cobraColuna[posicao] = matriz[0].length / 2 - posicao;
             posicao++;
         }
-        int andador = 0;
 
         desenharCobra(matriz, cobraLinha, cobraColuna, tamanho);
 
-        gerarFrutas(matriz, 4);
+        gerarFrutas(matriz, 8);
 
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[0].length; j++) {
@@ -107,69 +125,102 @@ public class TCA {
             }
             System.out.println();
         }
+        mostrarPontuacao(pontuacao);
 
         while (true) {
-            // Lógica para detectar o movimento
+
             if (pressionouTecla()) {
                 int tecla = obtemTeclaPressionada();
+
                 switch (tecla) {
-                    case 'a':
-                    case 'A':
-                        cobraLinha[1]--;
-                        desenharCobra(matriz, cobraLinha, cobraColuna, tamanho);
-                        break;
-                    case 'd':
-                    case 'D':
-                        cobraLinha[1]++;
-                        desenharCobra(matriz, cobraLinha, cobraColuna, tamanho);
-                        break;
+                    case 27:
+                        System.out.print("\033[38;1H");
+                        System.out.println("Jogo encerrado - Pontuação: " + pontuacao);
+                        return;
                     case 'w':
                     case 'W':
-                        cobraColuna[1]--;
-                        desenharCobra(matriz, cobraLinha, cobraColuna, tamanho);
+                        if (direcaoLinha != 1) {
+                            direcaoLinha = -1;
+                            direcaoColuna = 0;
+                        }
                         break;
                     case 's':
                     case 'S':
-                        cobraColuna[1]++;
-                        desenharCobra(matriz, cobraLinha, cobraColuna, tamanho);
-                        break;
-                    case 27: // Código ASCII para a tecla ESC
-                        return;
-                    default:
-                        break; // Sai do loop e termina o programa
-
-                }
-                
-                for (int linha = 0; linha < matriz.length; linha++) {
-                    for (int coluna = 0; coluna < matriz[0].length; coluna++) {
-                        
-                        if (linha == matriz.length - 1 || linha == 0 || coluna == matriz[0].length - 1 || coluna == 0) {
-                            matriz[linha][coluna] = '#';
-                        } else {
-                            matriz[linha][coluna] = VAZIO;
+                        if (direcaoLinha != -1) {
+                            direcaoLinha = 1;
+                            direcaoColuna = 0;
                         }
-                    }
-                }
-                System.out.printf("\n\n");
-
-                int poosicao = 0;
-                while (poosicao < tamanho) {
-                    cobraLinha[poosicao] = matriz.length / 2;
-                    cobraColuna[poosicao] = matriz[0].length / 2 - poosicao;
-                    poosicao++;
-                }
-
-                
-
-                for (int i = 0; i < matriz.length; i++) {
-                    for (int j = 0; j < matriz[0].length; j++) {
-                        System.out.print(matriz[i][j]);
-                    }
-                    System.out.println();
+                        break;
+                    case 'a':
+                    case 'A':
+                        if (direcaoColuna != 1) {
+                            direcaoLinha = 0;
+                            direcaoColuna = -1;
+                        }
+                        break;
+                    case 'd':
+                    case 'D':
+                        if (direcaoColuna != -1) {
+                            direcaoLinha = 0;
+                            direcaoColuna = 1;
+                        }
+                        break;
                 }
             }
 
+            int linhaCauda = cobraLinha[tamanho - 1];
+            int colunaCauda = cobraColuna[tamanho - 1];
+
+            int linhaCabeca = cobraLinha[0];
+            int colunaCabeca = cobraColuna[0];
+
+            matriz[linhaCauda][colunaCauda] = VAZIO;
+            atualizarTela(linhaCauda, colunaCauda, VAZIO);
+
+            matriz[linhaCabeca][colunaCabeca] = CORPO;
+            atualizarTela(linhaCabeca, colunaCabeca, CORPO);
+
+            for (int i = tamanho - 1; i > 0; i--) {
+                cobraLinha[i] = cobraLinha[i - 1];
+                cobraColuna[i] = cobraColuna[i - 1];
+            }
+
+            cobraLinha[0] += direcaoLinha;
+            cobraColuna[0] += direcaoColuna;
+
+            if (matriz[cobraLinha[0]][cobraColuna[0]] == '#') {
+                System.out.print("\033[38;1H");
+                System.out.println(" ███   ███  █   █ █████     ███  █   █ █████ ████    \n" + //
+                                        "█ ░░░ █ ░░█ ██ ██░█░░░░░   █ ░░█ █░  █░█░░░░░█░░░█   \n" + //
+                                        "█░ ██░█████░█░█ █░████░░░  █░ ░█░█░░ █░████░░████░░  \n" + //
+                                        "█░░ █░█░░░█░█░░░█░█░░░░    █░░ █░░█░█ ░█░░░░ █░░█░ ░ \n" + //
+                                        " ███ ░█░░░█░█░░ █░█████░    ███ ░░ █ ░ █████░█░░░█░  \n" + //
+                                        "  ░░░ ░░░  ░░░░  ░░░░░░░     ░░░ ░  ░ ░ ░░░░░ ░░  ░  \n" + //
+                                        "   ░░░  ░   ░ ░   ░ ░░░░░     ░░░    ░   ░░░░░ ░   ░ - Pontuação: " + pontuacao);
+                return;
+            }
+
+            if (matriz[cobraLinha[0]][cobraColuna[0]] == '*') {
+                tamanho++;
+                cobraLinha[tamanho - 1] = linhaCauda;
+                cobraColuna[tamanho - 1] = colunaCauda;
+                matriz[linhaCauda][colunaCauda] = CORPO;
+                atualizarTela(linhaCauda, colunaCauda, CORPO);
+
+                pontuacao += 10;
+                mostrarPontuacao(pontuacao);
+
+                int[] fruta = gerarFruta(matriz);
+                atualizarTela(fruta[0], fruta[1], '*');
+            }
+
+            matriz[cobraLinha[0]][cobraColuna[0]] = CABECA;
+            atualizarTela(cobraLinha[0], cobraColuna[0], CABECA);
+
+            for (int i = 0; i < 100000000; i++) {
+            }
         }
+
     }
 
     // Liga o Java às funções _kbhit e _getch do Windows (só usada no Windows)
