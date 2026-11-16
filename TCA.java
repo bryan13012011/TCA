@@ -1,6 +1,5 @@
 import com.sun.jna.Library;
 import com.sun.jna.Native;
-
 import java.util.*;
 
 public class TCA {
@@ -9,10 +8,12 @@ public class TCA {
     final static Random FRUTINHAS = new Random();
 
     final static char VAZIO = ' ';
-    final static char CABECA = 'O';
+    final static char CABECA = 'Ø';
     final static char CORPO = 'o';
     static int direcaoLinha = 0;
     static int direcaoColuna = 1;
+    final static int VELOCIDADEMAX = 100000000;
+    final static int VELOCIDADEMIN = 200000000;
 
     public static int lerValorInteiro() {
         return LER.nextInt();
@@ -47,6 +48,25 @@ public class TCA {
         }
     }
 
+    public static int[] gerarBufer(char[][] matriz) {
+        int linha = FRUTINHAS.nextInt(matriz.length - 2) + 1;
+        int coluna = FRUTINHAS.nextInt(matriz[0].length - 2) + 1;
+
+        while (matriz[linha][coluna] != VAZIO) {
+            linha = FRUTINHAS.nextInt(matriz.length - 2) + 1;
+            coluna = FRUTINHAS.nextInt(matriz[0].length - 2) + 1;
+        }
+
+        matriz[linha][coluna] = '@';
+        return new int[] { linha, coluna };
+    }
+
+    public static void gerarBufers(char[][] matriz, int quantidade) {
+        for (int i = 0; i < quantidade; i++) {
+            gerarBufer(matriz);
+        }
+    }
+
     public static void desenharCobra(char[][] matriz, int[] cobraLinha, int[] cobraColuna, int tamanho) {
         for (int posicao = 0; posicao < tamanho; posicao++) {
 
@@ -71,11 +91,51 @@ public class TCA {
         System.out.flush();
     }
 
+    // Pergunta se quer jogar de novo. S = sim, N ou ESC = nao.
+    public static boolean perguntarJogarDeNovo() {
+        // descarta teclas que ficaram apertadas durante o jogo
+        for (int i = 0; i < 20 && pressionouTecla(); i++) {
+            obtemTeclaPressionada();
+        }
+
+        System.out.print("\n  Jogar de novo? (S/N) ");
+        System.out.flush();
+
+        int resposta = 0;
+        while (resposta != 's' && resposta != 'S' && resposta != 'n' && resposta != 'N' && resposta != 27) {
+            resposta = obtemTeclaPressionada();
+        }
+
+        if (resposta == 's' || resposta == 'S') {
+            return true;
+        }
+        System.out.println();
+        return false;
+    }
+
     public static void main(String[] args) {
-        System.out.print("\033[2J\033[H");
         System.out.print("\033[?25l"); // esconde o cursor
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.print("\033[?25h"))); // mostra o cursor ao sair
-        char[][] matriz = new char[20][40];
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.print("\033[?25h"))); // mostra o cursor ao
+                                                                                               // sair
+
+        boolean jogarDeNovo = true;
+        while (jogarDeNovo) {
+            boolean morreu = jogar();
+
+            if (morreu) {
+                jogarDeNovo = perguntarJogarDeNovo();
+            } else {
+                jogarDeNovo = false;
+            }
+        }
+    }
+
+    // Roda uma partida. Retorna true se a cobra morreu e false se saiu com ESC.
+    public static boolean jogar() {
+        direcaoLinha = 0;
+        direcaoColuna = 1;
+        System.out.print("\033[2J\033[H");
+        char[][] matriz = new char[16][40];
 
         System.out.print("""
 
@@ -102,6 +162,7 @@ public class TCA {
         }
         System.out.printf("\n\n");
 
+        int maiorPontuacao = 500;
         int tamanho = 3;
         int pontuacao = 0;
 
@@ -117,7 +178,8 @@ public class TCA {
 
         desenharCobra(matriz, cobraLinha, cobraColuna, tamanho);
 
-        gerarFrutas(matriz, 8);
+        gerarFrutas(matriz, 4);
+        gerarBufers(matriz, 3);
 
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[0].length; j++) {
@@ -126,6 +188,8 @@ public class TCA {
             System.out.println();
         }
         mostrarPontuacao(pontuacao);
+
+        boolean buferAtivo = false;
 
         while (true) {
 
@@ -136,7 +200,7 @@ public class TCA {
                     case 27:
                         System.out.print("\033[38;1H");
                         System.out.println("Jogo encerrado - Pontuação: " + pontuacao);
-                        return;
+                        return false;
                     case 'w':
                     case 'W':
                         if (direcaoLinha != 1) {
@@ -188,20 +252,22 @@ public class TCA {
             cobraLinha[0] += direcaoLinha;
             cobraColuna[0] += direcaoColuna;
 
-            if (matriz[cobraLinha[0]][cobraColuna[0]] == '#') {
+            if ((matriz[cobraLinha[0]][cobraColuna[0]] == '#' || matriz[cobraLinha[0]][cobraColuna[0]] == CORPO)) {
                 System.out.print("\033[38;1H");
-                System.out.println(" ███   ███  █   █ █████     ███  █   █ █████ ████    \n" + //
-                                        "█ ░░░ █ ░░█ ██ ██░█░░░░░   █ ░░█ █░  █░█░░░░░█░░░█   \n" + //
-                                        "█░ ██░█████░█░█ █░████░░░  █░ ░█░█░░ █░████░░████░░  \n" + //
-                                        "█░░ █░█░░░█░█░░░█░█░░░░    █░░ █░░█░█ ░█░░░░ █░░█░ ░ \n" + //
-                                        " ███ ░█░░░█░█░░ █░█████░    ███ ░░ █ ░ █████░█░░░█░  \n" + //
-                                        "  ░░░ ░░░  ░░░░  ░░░░░░░     ░░░ ░  ░ ░ ░░░░░ ░░  ░  \n" + //
-                                        "   ░░░  ░   ░ ░   ░ ░░░░░     ░░░    ░   ░░░░░ ░   ░ - Pontuação: " + pontuacao);
-                return;
+                System.out.printf(" ███   ███  █   █ █████     ███  █   █ █████ ████    \n" + //
+                        "█ ░░░ █ ░░█ ██ ██░█░░░░░   █ ░░█ █░  █░█░░░░░█░░░█   \n" + //
+                        "█░ ██░█████░█░█ █░████░░░  █░ ░█░█░░ █░████░░████░░  \n" + //
+                        "█░░ █░█░░░█░█░░░█░█░░░░    █░░ █░░█░█ ░█░░░░ █░░█░ ░ \n" + //
+                        " ███ ░█░░░█░█░░ █░█████░    ███ ░░ █ ░ █████░█░░░█░  \n" + //
+                        "  ░░░ ░░░  ░░░░  ░░░░░░░     ░░░ ░  ░ ░ ░░░░░ ░░  ░  \n" + //
+                        "   ░░░  ░   ░ ░   ░ ░░░░░     ░░░    ░   ░░░░░ ░   ░ - Sua pontuaçao = %d - Maior pontuçao = %d",
+                        pontuacao, maiorPontuacao);
+                return true;
             }
 
             if (matriz[cobraLinha[0]][cobraColuna[0]] == '*') {
                 tamanho++;
+                buferAtivo = false;
                 cobraLinha[tamanho - 1] = linhaCauda;
                 cobraColuna[tamanho - 1] = colunaCauda;
                 matriz[linhaCauda][colunaCauda] = CORPO;
@@ -211,13 +277,32 @@ public class TCA {
                 mostrarPontuacao(pontuacao);
 
                 int[] fruta = gerarFruta(matriz);
+
                 atualizarTela(fruta[0], fruta[1], '*');
+
+                if (pontuacao < maiorPontuacao) {
+                    maiorPontuacao = pontuacao;
+                }
+            }
+
+            if (matriz[cobraLinha[0]][cobraColuna[0]] == '@') {
+                buferAtivo = true;
+
+                pontuacao += 15;
+                mostrarPontuacao(pontuacao);
+
+                int[] bufer = gerarBufer(matriz);
+                atualizarTela(bufer[0], bufer[1], '@');
             }
 
             matriz[cobraLinha[0]][cobraColuna[0]] = CABECA;
             atualizarTela(cobraLinha[0], cobraColuna[0], CABECA);
 
-            for (int i = 0; i < 100000000; i++) {
+            int velocidade = VELOCIDADEMIN;
+            if (buferAtivo) {
+                velocidade = VELOCIDADEMAX;
+            }
+            for (int i = 0; i < velocidade; i++) {
             }
         }
 
