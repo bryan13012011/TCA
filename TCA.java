@@ -199,7 +199,7 @@ public class TCA {
 
         gerarFrutas(matriz, 4);
         gerarBufers(matriz, 3);
-        gerarBarreiras(matriz, 7);
+        gerarBarreiras(matriz, 30);
 
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[0].length; j++) {
@@ -308,7 +308,7 @@ public class TCA {
 
                 pontuacao += 150;
                 mostrarPontuacao(pontuacao);
-                tamanho += 5;
+                tamanho++;
 
                 int[] bufer = gerarBufer(matriz);
                 atualizarTela(bufer[0], bufer[1], '@');
