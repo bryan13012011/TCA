@@ -181,7 +181,7 @@ public class TCA {
         }
         System.out.printf("\n\n");
 
-        int maiorPontuacao = 500;
+        
         int tamanho = 3;
         int pontuacao = 0;
 
@@ -280,8 +280,8 @@ public class TCA {
                         "█░░ █░█░░░█░█░░░█░█░░░░    █░░ █░░█░█ ░█░░░░ █░░█░ ░ \n" + //
                         " ███ ░█░░░█░█░░ █░█████░    ███ ░░ █ ░ █████░█░░░█░  \n" + //
                         "  ░░░ ░░░  ░░░░  ░░░░░░░     ░░░ ░  ░ ░ ░░░░░ ░░  ░  \n" + //
-                        "   ░░░  ░   ░ ░   ░ ░░░░░     ░░░    ░   ░░░░░ ░   ░ - Sua pontuaçao = %d - Maior pontuçao = %d",
-                        pontuacao, maiorPontuacao);
+                        "   ░░░  ░   ░ ░   ░ ░░░░░     ░░░    ░   ░░░░░ ░   ░ - Sua pontuaçao = %d ",
+                        pontuacao);
                 return true;
             }
 
@@ -300,9 +300,7 @@ public class TCA {
 
                 atualizarTela(fruta[0], fruta[1], '*');
 
-                if (pontuacao < maiorPontuacao) {
-                    maiorPontuacao = pontuacao;
-                }
+               
             }
 
             if (matriz[cobraLinha[0]][cobraColuna[0]] == '@') {
