@@ -12,8 +12,8 @@ public class TCA {
     final static char CORPO = 'o';
     static int direcaoLinha = 0;
     static int direcaoColuna = 1;
-    final static int VELOCIDADEMAX = 100000000;
-    final static int VELOCIDADEMIN = 200000000;
+    final static int VELOCIDADEMAX = 300000000;
+    final static int VELOCIDADEMIN = 500000000;
 
     public static int lerValorInteiro() {
         return LER.nextInt();
@@ -78,6 +78,25 @@ public class TCA {
         }
 
     }
+    public static int[] gerarBarreira(char[][] matriz) {
+        int linha = FRUTINHAS.nextInt(matriz.length - 2) + 1;
+        int coluna = FRUTINHAS.nextInt(matriz[0].length - 2) + 1;
+
+        while (matriz[linha][coluna] != VAZIO) {
+            linha = FRUTINHAS.nextInt(matriz.length - 2) + 1;
+            coluna = FRUTINHAS.nextInt(matriz[0].length - 2) + 1;
+        }
+
+        matriz[linha][coluna] = '|';
+        return new int[] { linha, coluna };
+    }
+
+    public static void gerarBarreiras(char[][] matriz, int quantidade) {
+        for (int i = 0; i < quantidade; i++) {
+            gerarBarreira(matriz);
+        }
+    }
+
 
     public static void atualizarTela(int linha, int coluna, char caractere) {
         System.out.print("\033[" + (linha + 12) + ";" + (coluna + 1) + "H");
@@ -91,9 +110,9 @@ public class TCA {
         System.out.flush();
     }
 
-    // Pergunta se quer jogar de novo. S = sim, N ou ESC = nao.
+
     public static boolean perguntarJogarDeNovo() {
-        // descarta teclas que ficaram apertadas durante o jogo
+      
         for (int i = 0; i < 20 && pressionouTecla(); i++) {
             obtemTeclaPressionada();
         }
@@ -114,9 +133,9 @@ public class TCA {
     }
 
     public static void main(String[] args) {
-        System.out.print("\033[?25l"); // esconde o cursor
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.print("\033[?25h"))); // mostra o cursor ao
-                                                                                               // sair
+        System.out.print("\033[?25l"); 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.print("\033[?25h")));
+                                                                                               
 
         boolean jogarDeNovo = true;
         while (jogarDeNovo) {
@@ -130,12 +149,12 @@ public class TCA {
         }
     }
 
-    // Roda uma partida. Retorna true se a cobra morreu e false se saiu com ESC.
+    
     public static boolean jogar() {
         direcaoLinha = 0;
         direcaoColuna = 1;
         System.out.print("\033[2J\033[H");
-        char[][] matriz = new char[16][40];
+        char[][] matriz = new char[20][60];
 
         System.out.print("""
 
@@ -180,6 +199,7 @@ public class TCA {
 
         gerarFrutas(matriz, 4);
         gerarBufers(matriz, 3);
+        gerarBarreiras(matriz, 7);
 
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[0].length; j++) {
@@ -252,7 +272,7 @@ public class TCA {
             cobraLinha[0] += direcaoLinha;
             cobraColuna[0] += direcaoColuna;
 
-            if ((matriz[cobraLinha[0]][cobraColuna[0]] == '#' || matriz[cobraLinha[0]][cobraColuna[0]] == CORPO)) {
+            if ((matriz[cobraLinha[0]][cobraColuna[0]] == '#' || matriz[cobraLinha[0]][cobraColuna[0]] == CORPO || matriz[cobraLinha[0]][cobraColuna[0]] == '|')) {
                 System.out.print("\033[38;1H");
                 System.out.printf(" ███   ███  █   █ █████     ███  █   █ █████ ████    \n" + //
                         "█ ░░░ █ ░░█ ██ ██░█░░░░░   █ ░░█ █░  █░█░░░░░█░░░█   \n" + //
@@ -273,7 +293,7 @@ public class TCA {
                 matriz[linhaCauda][colunaCauda] = CORPO;
                 atualizarTela(linhaCauda, colunaCauda, CORPO);
 
-                pontuacao += 10;
+                pontuacao += 100;
                 mostrarPontuacao(pontuacao);
 
                 int[] fruta = gerarFruta(matriz);
@@ -288,8 +308,9 @@ public class TCA {
             if (matriz[cobraLinha[0]][cobraColuna[0]] == '@') {
                 buferAtivo = true;
 
-                pontuacao += 15;
+                pontuacao += 150;
                 mostrarPontuacao(pontuacao);
+                tamanho += 5;
 
                 int[] bufer = gerarBufer(matriz);
                 atualizarTela(bufer[0], bufer[1], '@');

@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TCA",
+            "request": "launch",
+            "mainClass": "TCA",
+            "projectName": "TCA_dcc64c49"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
