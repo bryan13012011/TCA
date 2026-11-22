@@ -12,8 +12,7 @@ public class TCA {
     final static char CORPO = 'o';
     static int direcaoLinha = 0;
     static int direcaoColuna = 1;
-    final static int VELOCIDADEMAX = 100000000;
-    final static int VELOCIDADEMIN = 200000000;
+    
 
     public static int lerValorInteiro() {
         return LER.nextInt();
