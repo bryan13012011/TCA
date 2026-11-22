@@ -116,17 +116,17 @@ public class Menu {
         if (opcaoSelecionada == 0) {
 
             System.out.println("Dificuldade FACIL selecionada!");
-            TCA.iniciarJogo(300000000);
+            TCA.iniciarJogo(400000000);
 
         } else if (opcaoSelecionada == 1) {
 
             System.out.println("Dificuldade MEDIA selecionada!");
-            TCA.iniciarJogo(200000000);
+            TCA.iniciarJogo(300000000);
 
         } else if (opcaoSelecionada == 2) {
 
             System.out.println("Dificuldade DIFICIL selecionada!");
-            TCA.iniciarJogo(100000000);
+            TCA.iniciarJogo(200000000);
 
         } else if (opcaoSelecionada == 3) {
 
@@ -187,5 +187,6 @@ public class Menu {
         }
     }
 }
+
    
 
