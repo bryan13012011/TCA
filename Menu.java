@@ -104,7 +104,7 @@ public class Menu {
         }
 
         System.out.println();
-        System.out.println("       W,A,S,D para navegar");
+        System.out.println("       W,S para navegar");
         System.out.println("       ENTER para selecionar");
         System.out.println("       ESC para sair");
     }

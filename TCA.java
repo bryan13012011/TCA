@@ -233,8 +233,7 @@ public class TCA {
             cobraLinha[0] += direcaoLinha;
             cobraColuna[0] += direcaoColuna;
 
-            if ((matriz[cobraLinha[0]][cobraColuna[0]] == '#' || matriz[cobraLinha[0]][cobraColuna[0]] == CORPO
-                    || matriz[cobraLinha[0]][cobraColuna[0]] == '|')) {
+            if ((matriz[cobraLinha[0]][cobraColuna[0]] == '#' || matriz[cobraLinha[0]][cobraColuna[0]] == CORPO || matriz[cobraLinha[0]][cobraColuna[0]] == '|')) {
 
                 System.out.print("\033[2J\033[H");
 
