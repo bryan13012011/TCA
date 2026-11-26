@@ -112,7 +112,7 @@ public class TCA {
 
     // atualiza um caractere em uma posição específica da tela
     public static void atualizarTela(int linha, int coluna, char caractere) {
-        System.out.print("\033[" + (linha + 12) + ";" + (coluna + 1) + "H");
+        System.out.print("\033[" + (linha + 11) + ";" + (coluna + 1) + "H");
         System.out.print(caractere);
         System.out.flush();
     }
