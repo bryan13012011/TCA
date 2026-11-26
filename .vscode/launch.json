@@ -7,6 +7,13 @@
             "name": "Menu",
             "request": "launch",
             "mainClass": "Menu",
+            "projectName": "TCA_12010d0c"
+        },
+        {
+            "type": "java",
+            "name": "Menu",
+            "request": "launch",
+            "mainClass": "Menu",
             "projectName": "TCA_3f9c7655",
             "vmArgs": "--enable-native-access=ALL-UNNAMED"
         },

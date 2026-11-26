@@ -13,23 +13,19 @@ public class TCA {
     static int direcaoLinha = 0;
     static int direcaoColuna = 1;
 
-    // lê um número inteiro digitado
     public static int lerValorInteiro() {
         return LER.nextInt();
     }
 
-    // lê um número decimal
     public static float lerFloat() {
         return LER.nextFloat();
     }
 
-    // lê um caractere digitado
     public static char lerValorCaracter() {
         char letra = LER.next().charAt(0);
         return letra;
     }
 
-    // cria uma fruta em uma posição aleatória do mapa
     public static int[] gerarFruta(char[][] matriz) {
         int linha = FRUTINHAS.nextInt(matriz.length - 2) + 1;
         int coluna = FRUTINHAS.nextInt(matriz[0].length - 2) + 1;
@@ -43,16 +39,13 @@ public class TCA {
         return new int[] { linha, coluna };
     }
 
-    // cria várias frutas no mapa
     public static void gerarFrutas(char[][] matriz, int quantidade) {
         for (int i = 0; i < quantidade; i++) {
 
-            // chama a função que cria uma fruta
             gerarFruta(matriz);
         }
     }
 
-    // cria um bônus em uma posição aleatória do mapa
     public static int[] gerarBufer(char[][] matriz) {
         int linha = FRUTINHAS.nextInt(matriz.length - 2) + 1;
         int coluna = FRUTINHAS.nextInt(matriz[0].length - 2) + 1;
@@ -66,16 +59,13 @@ public class TCA {
         return new int[] { linha, coluna };
     }
 
-    // cria vários bônus no mapa
     public static void gerarBufers(char[][] matriz, int quantidade) {
         for (int i = 0; i < quantidade; i++) {
 
-            // chama a função que cria um bônus
             gerarBufer(matriz);
         }
     }
 
-    // desenha a cobra na matriz usando a cabeça e o corpo
     public static void desenharCobra(char[][] matriz, int[] cobraLinha, int[] cobraColuna, int tamanho) {
         for (int posicao = 0; posicao < tamanho; posicao++) {
 
@@ -87,7 +77,6 @@ public class TCA {
         }
     }
 
-    // cria uma barreira em uma posição aleatória do mapa
     public static int[] gerarBarreira(char[][] matriz) {
         int linha = FRUTINHAS.nextInt(matriz.length - 2) + 1;
         int coluna = FRUTINHAS.nextInt(matriz[0].length - 2) + 1;
@@ -101,30 +90,25 @@ public class TCA {
         return new int[] { linha, coluna };
     }
 
-    // cria várias barreiras no mapa
     public static void gerarBarreiras(char[][] matriz, int quantidade) {
         for (int i = 0; i < quantidade; i++) {
 
-            // chama a função que cria uma barreira
             gerarBarreira(matriz);
         }
     }
 
-    // atualiza um caractere em uma posição específica da tela
     public static void atualizarTela(int linha, int coluna, char caractere) {
-        System.out.print("\033[" + (linha + 11) + ";" + (coluna + 1) + "H");
+        System.out.print("\033[" + (linha + 12) + ";" + (coluna + 1) + "H");
         System.out.print(caractere);
         System.out.flush();
     }
 
-    // mostra a pontuação atual do jogador
     public static void mostrarPontuacao(int pontuacao) {
         System.out.print("\033[10;1H");
         System.out.print("  Pontuação: " + pontuacao);
         System.out.flush();
     }
 
-    // inicia o jogo e controla tudo que acontece durante a partida
     public static void iniciarJogo(int velocidadeJogo) {
         System.out.print("\033[?25l");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.print("\033[?25h")));
@@ -173,16 +157,12 @@ public class TCA {
             posicao++;
         }
 
-        // chama a função para desenhar a cobra no mapa
         desenharCobra(matriz, cobraLinha, cobraColuna, tamanho);
 
-        // chama a função para criar quatro frutas
         gerarFrutas(matriz, 4);
 
-        // chama a função para criar três bônus
         gerarBufers(matriz, 3);
 
-        // chama a função para criar sete barreiras
         gerarBarreiras(matriz, 7);
 
         for (int i = 0; i < matriz.length; i++) {
@@ -192,17 +172,14 @@ public class TCA {
             System.out.println();
         }
 
-        // chama a função para mostrar a pontuação inicial
         mostrarPontuacao(pontuacao);
 
         boolean buferAtivo = false;
 
         while (true) {
 
-            // verifica se alguma tecla foi pressionada
             if (pressionouTecla()) {
 
-                // pega a tecla que foi pressionada
                 int tecla = obtemTeclaPressionada();
 
                 switch (tecla) {
@@ -249,12 +226,10 @@ public class TCA {
 
             matriz[linhaCauda][colunaCauda] = VAZIO;
 
-            // atualiza a tela para apagar a posição antiga da cauda
             atualizarTela(linhaCauda, colunaCauda, VAZIO);
 
             matriz[linhaCabeca][colunaCabeca] = CORPO;
 
-            // atualiza a tela para mostrar o corpo no lugar da cabeça antiga
             atualizarTela(linhaCabeca, colunaCabeca, CORPO);
 
             for (int i = tamanho - 1; i > 0; i--) {
@@ -265,7 +240,8 @@ public class TCA {
             cobraLinha[0] += direcaoLinha;
             cobraColuna[0] += direcaoColuna;
 
-            if ((matriz[cobraLinha[0]][cobraColuna[0]] == '#' || matriz[cobraLinha[0]][cobraColuna[0]] == CORPO || matriz[cobraLinha[0]][cobraColuna[0]] == '|')) {
+            if ((matriz[cobraLinha[0]][cobraColuna[0]] == '#' || matriz[cobraLinha[0]][cobraColuna[0]] == CORPO
+                    || matriz[cobraLinha[0]][cobraColuna[0]] == '|')) {
 
                 System.out.print("\033[2J\033[H");
 
@@ -280,7 +256,6 @@ public class TCA {
 
                 System.out.println("\n");
 
-                // chama a função para esperar o jogador apertar uma tecla
                 esperarTecla();
                 return;
             }
@@ -294,18 +269,14 @@ public class TCA {
 
                 matriz[linhaCauda][colunaCauda] = CORPO;
 
-                // atualiza a tela para mostrar a cauda que foi mantida
                 atualizarTela(linhaCauda, colunaCauda, CORPO);
 
                 pontuacao += 100;
 
-                // atualiza a pontuação na tela
                 mostrarPontuacao(pontuacao);
 
-                // chama a função para criar outra fruta
                 int[] fruta = gerarFruta(matriz);
 
-                // mostra a nova fruta na tela
                 atualizarTela(fruta[0], fruta[1], '*');
             }
 
@@ -314,7 +285,6 @@ public class TCA {
 
                 pontuacao += 200;
 
-                // atualiza a pontuação depois de pegar o bônus
                 mostrarPontuacao(pontuacao);
 
                 tamanho++;
@@ -322,16 +292,13 @@ public class TCA {
                 cobraLinha[tamanho - 1] = linhaCauda;
                 cobraColuna[tamanho - 1] = colunaCauda;
 
-                // chama a função para criar outro bônus
                 int[] bufer = gerarBufer(matriz);
 
-                // mostra o novo bônus na tela
                 atualizarTela(bufer[0], bufer[1], '@');
             }
 
             matriz[cobraLinha[0]][cobraColuna[0]] = CABECA;
 
-            // atualiza a tela para mostrar a nova posição da cabeça
             atualizarTela(cobraLinha[0], cobraColuna[0], CABECA);
 
             int velocidade = velocidadeJogo;
@@ -350,6 +317,7 @@ public class TCA {
         Crt INSTANCE = Native.load("msvcrt", Crt.class);
 
         int _kbhit();
+
         int _getch();
     }
 

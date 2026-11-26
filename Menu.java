@@ -76,10 +76,10 @@ public class Menu {
         System.out.flush();
     }
 
-    // mostra o menu e destaca a opção selecionada
+   
     public static void atualizarMenu(int opcaoSelecionada, String[] opcoes) {
 
-        // chama a função para limpar a tela antes de mostrar o menu
+      
         limparConsole();
 
         System.out.println();
@@ -117,33 +117,31 @@ public class Menu {
         System.out.println("       ESC para sair");
     }
 
-    // executa a ação de acordo com a dificuldade escolhida
     public static void executarAcaoMenu(int opcaoSelecionada
 
     ) {
 
-        // limpa o console antes de iniciar a ação
         limparConsole();
 
         if (opcaoSelecionada == 0) {
 
             System.out.println("Dificuldade FACIL selecionada!");
 
-            // chama o jogo com a velocidade da dificuldade fácil
+          
             TCA.iniciarJogo(400000000);
 
         } else if (opcaoSelecionada == 1) {
 
             System.out.println("Dificuldade MEDIA selecionada!");
 
-            // chama o jogo com a velocidade da dificuldade média
+            
             TCA.iniciarJogo(300000000);
 
         } else if (opcaoSelecionada == 2) {
 
             System.out.println("Dificuldade DIFICIL selecionada!");
 
-            // chama o jogo com a velocidade da dificuldade difícil
+            
             TCA.iniciarJogo(200000000);
 
         } else if (opcaoSelecionada == 3) {
@@ -151,8 +149,7 @@ public class Menu {
             System.exit(0);
         }
     }
-
-    // inicia o programa e controla as opções do menu
+    
     public static void main(String[] args) {
 
         String[] opcoes = {
@@ -164,15 +161,15 @@ public class Menu {
 
         int opcaoSelecionada = 0;
 
-        // chama a função para mostrar o menu pela primeira vez
+     
         atualizarMenu(opcaoSelecionada, opcoes);
 
         while (true) {
 
-            // chama a função para verificar se alguma tecla foi pressionada
+            
             if (pressionouTecla()) {
 
-                // chama a função para descobrir qual tecla foi apertada
+              
                 int tecla = obtemTeclaPressionada();
 
                 if (tecla == 'w' || tecla == 'W') {
@@ -183,7 +180,7 @@ public class Menu {
                         opcaoSelecionada = opcoes.length - 1;
                     }
 
-                    // atualiza o menu depois de mudar a opção
+                
                     atualizarMenu(opcaoSelecionada, opcoes);
 
                 } else if (tecla == 's' || tecla == 'S') {
@@ -194,15 +191,14 @@ public class Menu {
                         opcaoSelecionada = 0;
                     }
 
-                    // atualiza o menu depois de mudar a opção
                     atualizarMenu(opcaoSelecionada, opcoes);
 
                 } else if (tecla == 13) {
 
-                    // chama a função para executar a opção selecionada
+                    
                     executarAcaoMenu(opcaoSelecionada);
 
-                    // mostra o menu novamente depois que o jogo termina
+                    
                     atualizarMenu(opcaoSelecionada, opcoes);
 
                 } else if (tecla == 27) {
