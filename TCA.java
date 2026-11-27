@@ -256,8 +256,10 @@ public class TCA {
 
                 System.out.println("\n");
 
-                esperarTecla();
-                return;
+                System.out.flush();
+                System.out.print("\033[?25h");
+                System.exit(0);
+
             }
 
             if (matriz[cobraLinha[0]][cobraColuna[0]] == '*') {
